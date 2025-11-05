@@ -1,19 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { firaSans, exo2, notoSans } from "./ui/fonts";
+import { firaSans, exo2, notoSans, geistSans } from "./ui/fonts";
 import Footer from "@/components/footer";
-
-import { Provider } from "@/components/ui/provider";
-import { ChakraProvider, Flex } from "@chakra-ui/react";
+import { ThemeProvider } from "next-themes";
+import { ModeToggle } from "@/components/ui/ModeToggle";
 
 export const metadata: Metadata = {
 	title: "[SKRP] Sarasota County Sheriff's Office",
 	description: "Siesta Key Roleplay - Sarasota County Sheriff's Office",
-};
-
-const style = {
-	color: "white",
-	backgroundColor: "rgb(0,0,0)",
 };
 
 export default function RootLayout({
@@ -22,19 +16,24 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html
+			lang="en"
+			className="min-w-full min-h-full"
+			suppressHydrationWarning
+		>
 			<body
-				className={`${notoSans.className} antialiased bg-black`}
-				style={style}
-				suppressHydrationWarning
+				className={`${exo2.className} antialiased text-foreground bg-background min-h-screen`}
 			>
-				<Provider>
-					<Flex direction="column" bg="rgb(0,0,0)">
-						{children}
+				<ThemeProvider
+					attribute="class"
+					enableSystem={false}
+					defaultTheme="dark"
+				>
+					<ModeToggle />
+					{children}
 
-						<Footer />
-					</Flex>
-				</Provider>
+					<Footer />
+				</ThemeProvider>
 			</body>
 		</html>
 	);

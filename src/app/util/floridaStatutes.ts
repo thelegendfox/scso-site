@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 type StatutesExport = Array<StatutesSection>;
 
 type StatutesSection = {
@@ -18,6 +20,13 @@ type Statute = {
 	fine?: number | Array<number>; // First number is min, second max
 	notes?: string;
 };
+
+/*
+Regex to match (most) statutes:
+([0-9]*\.[0-9]*\(?[0-9a-zA-Z\))(\s:\s)([a-zA-Z\s,\.;]*)(?=\s-)
+
+([0-9]*\.[0-9]*\(?[0-9a-zA-Z\s,\.;]*\)*\)?)(?[\s:\s])
+*/
 
 const Infraction = "Infraction";
 const Misdemeanor = "Misdemeanor";
@@ -777,6 +786,8 @@ export const statutes: StatutesExport = [
 	},
 ];
 export default statutes;
+
+fs.writeFile("./floridaStatutes.json", JSON.stringify(statutes), console.log);
 
 /*},
 {
