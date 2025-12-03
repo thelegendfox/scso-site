@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import addToAllCaseNumsString from "./addToAllCaseNumsString";
 
 export default function processCaseNum(

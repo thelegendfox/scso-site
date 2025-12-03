@@ -1,45 +1,38 @@
 "use client";
 
+import { AlertCircleIcon } from "lucide-react";
+import {
+  type ChangeEvent,
+  Dispatch,
+  FormEvent,
+  FormEventHandler,
+  type JSX,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
-  FieldGroup,
-  FieldSet,
-  FieldLegend,
-  FieldDescription,
-  FieldLabel,
   Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { AlertCircleIcon } from "lucide-react";
-import {
-  ChangeEvent,
-  FormEvent,
-  FormEventHandler,
-  JSX,
-  useState,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import processCaseNum from "./util/processCaseNum";
 import addToAllCaseNumsString from "./util/addToAllCaseNumsString";
+import processCaseNum from "./util/processCaseNum";
 
 export default function Home(): JSX.Element {
   const [caseNum, setCaseNum] = useState("");
   const [inputNum, setInputNum] = useState(""); // This is untouched, it's the raw value from the case number input.
   const [allCaseNumsString, setAllCaseNumsString] = useState("");
-
-  // const [reportTypes, setReportTypes] = useState({
-  //   incident: { on: false, number: 0 },
-  //   arrest: { on: false, number: 0 },
-  //   mva: { on: false, number: 0 },
-  //   citation: { on: false, number: 0 },
-  // });
 
   const [incidentReports, setIncidentReports] = useState(0);
   const [arrestReports, setArrestReports] = useState(0);
@@ -52,7 +45,7 @@ export default function Home(): JSX.Element {
   });
   const FormAlert = (): JSX.Element => {
     if (!formAlertText.title || !formAlertText.description)
-      return <span className="hidden"></span>;
+      return <span className="hidden" />;
     else
       return (
         <Alert>
@@ -62,6 +55,97 @@ export default function Home(): JSX.Element {
             <p>{formAlertText.description}</p>
           </AlertDescription>
         </Alert>
+      );
+  };
+
+  const ReportNumberSet = ({
+    children,
+  }: Readonly<{
+    children: React.ReactNode;
+  }>): JSX.Element => {
+    if (
+      incidentReports <= 0 &&
+      arrestReports <= 0 &&
+      mvaReports <= 0 &&
+      citationReports <= 0
+    )
+      return <span className="hidden" />;
+    else
+      return (
+        <FieldSet>
+          <FieldLegend>Amount of Reports</FieldLegend>
+          <FieldDescription>
+            Set the amount of reports per type (max 5)
+          </FieldDescription>
+          <FieldGroup>{children}</FieldGroup>
+        </FieldSet>
+      );
+  };
+  const IncidentReportNumberInput = (): JSX.Element => {
+    if (incidentReports <= 0) return <span className="hidden" />;
+    else
+      return (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="incidents">Incident Reports</Label>
+          <Input
+            id="incidents"
+            type="number"
+            min={1}
+            max={5}
+            onChange={(e) => setIncidentReports(e.target.valueAsNumber)}
+          />
+        </div>
+      );
+  };
+  const ArrestReportNumberInput =
+    arrestReports <= 0 ? (
+      <span className="hidden" />
+    ) : (
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="arrests">Arrest Reports</Label>
+        <Input
+          id="arrests"
+          type="number"
+          min={1}
+          max={5}
+          onChange={(e) => {
+            if (!Number.isNaN(e.target.valueAsNumber))
+              setArrestReports(e.target.valueAsNumber);
+          }}
+        />
+      </div>
+    );
+
+  const MvaReportNumberInput = (): JSX.Element => {
+    if (mvaReports <= 0) return <span className="hidden" />;
+    else
+      return (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="mva">MVA Reports</Label>
+          <Input
+            id="mva"
+            type="number"
+            min={1}
+            max={5}
+            onChange={(e) => setMvaReports(e.target.valueAsNumber)}
+          />
+        </div>
+      );
+  };
+  const CitationReportNumberInput = (): JSX.Element => {
+    if (citationReports <= 0) return <span className="hidden" />;
+    else
+      return (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="citations">Citation Reports</Label>
+          <Input
+            id="citations"
+            type="number"
+            min={1}
+            max={5}
+            onChange={(e) => setCitationReports(e.target.valueAsNumber)}
+          />
+        </div>
       );
   };
 
@@ -217,6 +301,12 @@ export default function Home(): JSX.Element {
                 </Button>
               </Field>
             </div>
+            <ReportNumberSet>
+              <IncidentReportNumberInput />
+              {ArrestReportNumberInput}
+              <MvaReportNumberInput />
+              <CitationReportNumberInput />
+            </ReportNumberSet>
           </FieldGroup>
         </form>
       </div>
